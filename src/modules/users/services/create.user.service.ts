@@ -23,21 +23,10 @@ export class CreateUserService {
       throw new NotFoundException('Tenant não encontrado ou inativo.');
     }
 
-    const [cpfExists, emailExists] = await Promise.all([
-      this.users.findByCpf(body.tenantId, body.cpf),
-      this.users.findByEmail(body.tenantId, body.email),
-    ]);
-
-    if (cpfExists) {
-      throw new ConflictException(
-        'Já existe um usuário com esse CPF neste tenant.',
-      );
-    }
+    const emailExists = await this.users.findByEmail(body.email);
 
     if (emailExists) {
-      throw new ConflictException(
-        'Já existe um usuário com esse email neste tenant.',
-      );
+      throw new ConflictException('Já existe um usuário com esse email.');
     }
 
     body.password = await this.hashGenerator.hash(body.password);

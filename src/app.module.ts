@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { PaginationModule } from './common/pagination/pagination.module';
 import { PrismaModule } from './infrastructure/database/prisma/prisma.module';
 import { envSchema } from './infrastructure/env/env';
 import { AuthModule } from './modules/auth/auth.module';
@@ -14,6 +15,7 @@ import { UserModule } from './modules/users/user.module';
         envSchema.parse(env) as unknown as Record<string, string>,
       isGlobal: true,
     }),
+    PaginationModule,
     PrismaModule,
     CryptographyModule,
     TenantModule,

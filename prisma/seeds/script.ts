@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma';
-import { UserRole } from '@prisma/client';
+import { UserRole } from '../generated/client';
 import { hash } from 'bcryptjs';
 import 'dotenv/config';
 
@@ -17,26 +17,20 @@ async function main() {
     },
   });
 
-  const passwordHash = await hash('123456', 8);
+  const passwordHash = await hash('password', 8);
 
-  const existingUser = await prisma.user.findFirst({
-    where: {
-      tenantId: tenant.id,
-      email: 'admin@template.local',
-    },
+  const existingUser = await prisma.user.findUnique({
+    where: { email: 'admin@syslae.com' },
   });
 
   if (existingUser) {
     await prisma.user.update({
       where: {
-        tenantId_id: {
-          tenantId: tenant.id,
-          id: existingUser.id,
-        },
+        email: 'admin@syslae.com',
       },
       data: {
+        tenantId: tenant.id,
         name: 'Template Admin',
-        cpf: '00000000000',
         phone: '85999999999',
         password: passwordHash,
         role: UserRole.admin,
@@ -47,8 +41,7 @@ async function main() {
       data: {
         tenantId: tenant.id,
         name: 'Template Admin',
-        email: 'admin@template.local',
-        cpf: '00000000000',
+        email: 'admin@syslae.com',
         phone: '85999999999',
         password: passwordHash,
         role: UserRole.admin,
@@ -58,9 +51,8 @@ async function main() {
 
   console.info('Seed executado com sucesso.');
   console.info('Tenant slug: default');
-  console.info('Admin email: admin@template.local');
-  console.info('Admin cpf: 00000000000');
-  console.info('Admin password: 123456');
+  console.info('Admin email: admin@syslae.com');
+  console.info('Admin password: password');
 }
 
 main()

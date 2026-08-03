@@ -21,10 +21,6 @@ export class CreateUserDto {
   email!: string;
 
   @IsString()
-  @IsNotEmpty({ message: 'O CPF é obrigatório.' })
-  cpf!: string;
-
-  @IsString()
   @IsNotEmpty({ message: 'O telefone é obrigatório.' })
   phone!: string;
 

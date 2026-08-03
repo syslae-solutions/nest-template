@@ -12,10 +12,6 @@ export class UpdateUserDto {
 
   @IsOptional()
   @IsString()
-  cpf?: string;
-
-  @IsOptional()
-  @IsString()
   phone?: string;
 
   @IsOptional()

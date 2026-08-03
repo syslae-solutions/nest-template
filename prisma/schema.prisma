@@ -29,16 +29,13 @@ model User {
   tenantId  String
   tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   name      String
-  email     String
-  cpf       String
+  email     String   @unique
   phone     String
   password  String
   role      UserRole @default(member)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([tenantId, email])
-  @@unique([tenantId, cpf])
   @@unique([tenantId, id])
   @@index([tenantId])
 }

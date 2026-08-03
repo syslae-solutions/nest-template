@@ -63,6 +63,7 @@ src/
     domain/
     exceptions/
     interceptors/
+    pagination/
     utils/
   infrastructure/
     database/
@@ -97,9 +98,9 @@ Responsável pela autenticação.
 
 Fluxo principal:
 
-1. recebe `tenantSlug`, `cpf` e `password`
-2. valida se o tenant existe e está ativo
-3. busca o usuário dentro do tenant
+1. recebe `email` e `password`
+2. busca o usuário pelo email globalmente único
+3. utiliza o `tenantId` do próprio usuário para compor o JWT
 4. compara a senha com `bcrypt`
 5. emite um JWT com `sub`, `tenantId` e `role`
 
@@ -118,8 +119,8 @@ Responsável pelo CRUD de usuários.
 As regras principais do módulo já nascem tenant-aware:
 
 - criação depende de um tenant válido
-- `email` e `cpf` são únicos por tenant
-- listagem, busca, atualização e remoção usam `tenantId` do token
+- `email` é único em toda a base
+- listagem paginada, busca, atualização e remoção usam `tenantId` do token
 - a senha nunca é retornada na resposta
 
 ### `cryptography`
@@ -155,16 +156,16 @@ O projeto usa a estratégia `single database`.
 
 - existe uma tabela `Tenant`
 - existe uma tabela `User` com chave estrangeira `tenantId`
-- as unicidades de usuário são compostas por tenant
+- o email do usuário é globalmente único
 
 Exemplos:
 
-- `@@unique([tenantId, email])`
-- `@@unique([tenantId, cpf])`
+- `email String @unique`
+- `@@unique([tenantId, id])` preserva operações explicitamente escopadas
 
 ### Como isso aparece na aplicação
 
-- o login exige `tenantSlug`
+- o login usa apenas `email` e `password`; o tenant é obtido pelo usuário
 - o token carrega `tenantId`
 - os services de `users` usam `tenantId` para isolar as operações
 
@@ -177,6 +178,7 @@ Esse desenho serve como referência para qualquer novo módulo que precise respe
 - exceções de domínio
 - filtro global de erro
 - interceptor de resposta
+- serviço reutilizável de paginação
 - decorators compartilhados
 - utilitários auxiliares
 
@@ -252,7 +254,7 @@ docker compose up --build
 - `POST /api/tenants`
 - `POST /api/users`
 - `POST /api/auth/login`
-- `GET /api/users`
+- `GET /api/users?page=1&perPage=10`
 - `GET /api/users/:id`
 - `PUT /api/users/:id`
 - `DELETE /api/users/:id`

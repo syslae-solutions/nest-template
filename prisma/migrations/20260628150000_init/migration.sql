@@ -22,7 +22,6 @@ CREATE TABLE "User" (
     "tenantId" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
-    "cpf" TEXT NOT NULL,
     "phone" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "role" "UserRole" NOT NULL DEFAULT 'member',
@@ -39,17 +38,13 @@ CREATE UNIQUE INDEX "Tenant_slug_key" ON "Tenant"("slug");
 CREATE INDEX "Tenant_slug_idx" ON "Tenant"("slug");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
 CREATE INDEX "User_tenantId_idx" ON "User"("tenantId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "User_tenantId_email_key" ON "User"("tenantId", "email");
-
--- CreateIndex
-CREATE UNIQUE INDEX "User_tenantId_cpf_key" ON "User"("tenantId", "cpf");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_tenantId_id_key" ON "User"("tenantId", "id");
 
 -- AddForeignKey
 ALTER TABLE "User" ADD CONSTRAINT "User_tenantId_fkey" FOREIGN KEY ("tenantId") REFERENCES "Tenant"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-

@@ -8,9 +8,9 @@ export class FindUserByIdService {
   constructor(private readonly users: UserContract) {}
 
   async execute(tenantId: string, id: string) {
-    const user = await this.users.findById(tenantId, id);
+    const user = await this.users.findById(id);
 
-    if (!user) {
+    if (!user || user.tenantId !== tenantId) {
       throw new NotFoundException('Usuário não encontrado.');
     }
 

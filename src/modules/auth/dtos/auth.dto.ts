@@ -1,13 +1,9 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
 export class AuthDto {
-  @IsString()
-  @IsNotEmpty({ message: 'O slug do tenant é obrigatório.' })
-  tenantSlug!: string;
-
-  @IsString()
-  @IsNotEmpty({ message: 'O CPF é obrigatório.' })
-  cpf!: string;
+  @IsEmail({}, { message: 'O email deve ser válido.' })
+  @IsNotEmpty({ message: 'O email é obrigatório.' })
+  email!: string;
 
   @IsString()
   @IsNotEmpty({ message: 'A senha é obrigatória.' })

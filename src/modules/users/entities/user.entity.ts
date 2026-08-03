@@ -1,4 +1,4 @@
-import { UserRole } from '@prisma/client';
+import { UserRole } from '../../../../prisma/generated/client';
 
 export { UserRole };
 
@@ -7,7 +7,6 @@ export interface User {
   tenantId: string;
   name: string;
   email: string;
-  cpf: string;
   phone: string;
   password: string;
   role: UserRole;
@@ -21,7 +20,6 @@ export interface CreateUser {
   tenantId: string;
   name: string;
   email: string;
-  cpf: string;
   phone: string;
   password: string;
   role?: UserRole;
@@ -30,7 +28,6 @@ export interface CreateUser {
 export interface UpdateUser {
   name?: string;
   email?: string;
-  cpf?: string;
   phone?: string;
   password?: string;
   role?: UserRole;

@@ -4,8 +4,6 @@ import { PassportModule } from '@nestjs/passport';
 import { APP_GUARD } from '@nestjs/core';
 import { EnvModule } from '@/infrastructure/env/env.module';
 import { EnvService } from '@/infrastructure/env/env.service';
-import { TenantContract } from '@/modules/tenants/repositories/tenant.contract';
-import { TenantRepository } from '@/modules/tenants/repositories/tenant.repository';
 import { UserContract } from '../users/repositories/user.contract';
 import { UserRepository } from '../users/repositories/user.repository';
 import { AuthController } from './http/auth.controller';
@@ -38,10 +36,6 @@ import { AuthService } from './services/auth.service';
     {
       provide: UserContract,
       useClass: UserRepository,
-    },
-    {
-      provide: TenantContract,
-      useClass: TenantRepository,
     },
   ],
   controllers: [AuthController],

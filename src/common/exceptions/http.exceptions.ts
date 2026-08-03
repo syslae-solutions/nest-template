@@ -5,7 +5,7 @@ import {
   HttpException,
   Logger,
 } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Prisma } from '../../../prisma/generated/client';
 import { extractPrismaErrorMessage } from './helpers';
 import { HttpBaseException } from '../domain/http.base.exception';
 

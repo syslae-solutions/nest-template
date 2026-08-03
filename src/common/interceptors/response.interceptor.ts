@@ -8,19 +8,13 @@ import {
 import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { PaginationMeta } from '../pagination/pagination.types';
 
 export interface ApiResponse<T> {
   status: string;
   data: T;
   message: string;
-  pagination?: Pagination | null;
-}
-
-export interface Pagination {
-  total: number;
-  page: number;
-  lastPage: number;
-  limit: number;
+  pagination?: PaginationMeta | null;
 }
 
 @Injectable()
@@ -39,7 +33,7 @@ export class ResponseInterceptor<T> implements NestInterceptor<
       'Operação concluída com sucesso';
 
     return next.handle().pipe(
-      map((response: { data: T; pagination?: Pagination }) => {
+      map((response: { data: T; pagination?: PaginationMeta }) => {
         if (response?.data && response?.pagination) {
           return {
             status: 'success',

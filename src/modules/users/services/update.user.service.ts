@@ -16,29 +16,17 @@ export class UpdateUserService {
   ) {}
 
   async execute(tenantId: string, id: string, body: UpdateUserDto) {
-    const user = await this.users.findById(tenantId, id);
+    const user = await this.users.findById(id);
 
-    if (!user) {
+    if (!user || user.tenantId !== tenantId) {
       throw new NotFoundException('Usuário não encontrado.');
     }
 
-    if (body.cpf && body.cpf !== user.cpf) {
-      const cpfExists = await this.users.findByCpf(tenantId, body.cpf);
-
-      if (cpfExists) {
-        throw new ConflictException(
-          'Já existe um usuário com esse CPF neste tenant.',
-        );
-      }
-    }
-
     if (body.email && body.email !== user.email) {
-      const emailExists = await this.users.findByEmail(tenantId, body.email);
+      const emailExists = await this.users.findByEmail(body.email);
 
       if (emailExists) {
-        throw new ConflictException(
-          'Já existe um usuário com esse email neste tenant.',
-        );
+        throw new ConflictException('Já existe um usuário com esse email.');
       }
     }
 

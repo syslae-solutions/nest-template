@@ -1,11 +1,15 @@
+import { PaginationService } from '@/common/pagination/pagination.service';
 import { PrismaService } from '@/infrastructure/database/prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
 import { CreateUser, UpdateUser } from '../entities/user.entity';
-import { UserContract } from './user.contract';
+import { FindAllUsersParams, UserContract } from './user.contract';
 
 @Injectable()
 export class UserRepository implements UserContract {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly pagination: PaginationService,
+  ) {}
 
   async create(user: CreateUser) {
     return this.prisma.user.create({
@@ -13,28 +17,34 @@ export class UserRepository implements UserContract {
     });
   }
 
-  async findById(tenantId: string, id: string) {
-    return this.prisma.user.findFirst({
-      where: { id, tenantId },
+  async findById(id: string) {
+    return this.prisma.user.findUnique({
+      where: { id },
     });
   }
 
-  async findByCpf(tenantId: string, cpf: string) {
-    return this.prisma.user.findFirst({
-      where: { cpf, tenantId },
+  async findByEmail(email: string) {
+    return this.prisma.user.findUnique({
+      where: { email },
     });
   }
 
-  async findByEmail(tenantId: string, email: string) {
-    return this.prisma.user.findFirst({
-      where: { email, tenantId },
-    });
-  }
+  async findAll({ tenantId, page, perPage }: FindAllUsersParams) {
+    const where = { tenantId };
 
-  async findAll(tenantId: string) {
-    return this.prisma.user.findMany({
-      where: { tenantId },
-      orderBy: { createdAt: 'desc' },
+    return this.pagination.paginate({
+      page,
+      perPage,
+      query: {
+        count: () => this.prisma.user.count({ where }),
+        findMany: ({ skip, take }) =>
+          this.prisma.user.findMany({
+            where,
+            orderBy: { createdAt: 'desc' },
+            skip,
+            take,
+          }),
+      },
     });
   }
 
