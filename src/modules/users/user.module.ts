@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { TenantContract } from '../tenants/repositories/tenant.contract';
-import { TenantRepository } from '../tenants/repositories/tenant.repository';
 import { CreateUserController } from './http/create.user.controller';
 import { DeleteUserController } from './http/delete.user.controller';
 import { FindAllUsersController } from './http/find.all.users.controller';
@@ -31,10 +29,6 @@ import { UpdateUserService } from './services/update.user.service';
     {
       provide: UserContract,
       useClass: UserRepository,
-    },
-    {
-      provide: TenantContract,
-      useClass: TenantRepository,
     },
   ],
 })

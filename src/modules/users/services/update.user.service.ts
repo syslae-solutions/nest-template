@@ -5,7 +5,7 @@ import {
 import { HashGenerator } from '@/modules/cryptography/repositories/hash.generator.contract';
 import { Injectable } from '@nestjs/common';
 import { UpdateUserDto } from '../dtos/update.user.dto';
-import { withoutUserPassword } from '../entities/user.entity';
+import { UpdateUser, withoutUserPassword } from '../entities/user.entity';
 import { UserContract } from '../repositories/user.contract';
 
 @Injectable()
@@ -30,11 +30,14 @@ export class UpdateUserService {
       }
     }
 
-    if (body.password) {
-      body.password = await this.hashGenerator.hash(body.password);
+    const { password: plainPassword, ...data } = body;
+    const updateData: UpdateUser = data;
+
+    if (plainPassword) {
+      updateData.password = await this.hashGenerator.hash(plainPassword);
     }
 
-    const updatedUser = await this.users.update(tenantId, id, body);
+    const updatedUser = await this.users.update(tenantId, id, updateData);
 
     return withoutUserPassword(updatedUser);
   }

@@ -9,10 +9,6 @@ import { UserRole } from '../entities/user.entity';
 
 export class CreateUserDto {
   @IsString()
-  @IsNotEmpty({ message: 'O tenantId é obrigatório.' })
-  tenantId!: string;
-
-  @IsString()
   @IsNotEmpty({ message: 'O nome é obrigatório.' })
   name!: string;
 
